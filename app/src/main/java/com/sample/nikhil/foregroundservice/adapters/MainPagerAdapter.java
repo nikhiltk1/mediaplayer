@@ -1,4 +1,4 @@
-package com.sample.nikhil.foregroundservice;
+package com.sample.nikhil.foregroundservice.adapters;
 
 import android.content.Context;
 import android.os.Bundle;

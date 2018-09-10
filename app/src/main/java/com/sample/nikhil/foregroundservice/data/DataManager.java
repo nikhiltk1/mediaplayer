@@ -3,12 +3,16 @@ package com.sample.nikhil.foregroundservice.data;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.provider.MediaStore;
 
-import com.sample.nikhil.foregroundservice.MediaFile;
+import com.sample.nikhil.foregroundservice.data.model.MediaFile;
 import com.sample.nikhil.foregroundservice.data.model.ContextualObject;
 
 import java.io.File;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -18,7 +22,8 @@ import java.util.List;
 public class DataManager extends ContextualObject {
     private static DataManager mDataManager;
 
-    MP3DataManager mMP3DataManager;
+    private MP3DataManager mMP3DataManager;
+    public static final Uri EXTERNAL_CONTENT_URI= MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
     private DataManager(Context context) {
         super(context);
@@ -54,9 +59,16 @@ public class DataManager extends ContextualObject {
         return mMP3DataManager.removeAudioFocus();
     }
 
-    public void getPlayList(File rootFolder,Mp3FileListener listener) {
+    /*public void getPlayList(File rootFolder,Mp3FileListener listener) {
         mMP3DataManager.getPlayList(rootFolder,listener);
+    }*/
+    public void getPlayList(Uri uri) {
+        mMP3DataManager.getPlayList(uri);
     }
+    public List<File> getFolderList(){
+        return mMP3DataManager.getFolderList();
+    }
+
 
     public MediaPlayer getMediaPlayer() {
         return mMP3DataManager.getMediaPlayer();
@@ -80,7 +92,13 @@ public class DataManager extends ContextualObject {
     public ArrayList<MediaFile> getFiles(){
         return mMP3DataManager.getFiles();
     }
+    public List<File> getFolders(){
+        return mMP3DataManager.getMediaFolders(getContext());
+    }
 
+    public ArrayList<MediaFile> retrieveMediaFromFolder(File folder){
+        return mMP3DataManager.retrieveMediaFromFolder(folder,getContext());
+    }
     public void setFiles(ArrayList<MediaFile> files) {
         mMP3DataManager.setFiles(files);
     }

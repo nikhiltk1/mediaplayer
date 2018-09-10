@@ -1,4 +1,4 @@
-package com.sample.nikhil.foregroundservice;
+package com.sample.nikhil.foregroundservice.utils;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -11,8 +11,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.sample.nikhil.foregroundservice.R;
+import com.sample.nikhil.foregroundservice.activities.MainActivity;
+import com.sample.nikhil.foregroundservice.data.model.MediaFile;
+
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.sample.nikhil.foregroundservice.utils.Constants.INTENT_STRING_CLICKED_PLAYING_POSITION;
 
 /**
  * Created by Nikhil on 08-07-2018.
@@ -20,10 +27,12 @@ import java.util.TimerTask;
 
 public class ForeGroundService extends Service {
     private MediaPlayer mMediaPlayer;
+    private ArrayList<MediaFile> mMediaFiles;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        mMediaPlayer=MediaPlayer.create(getApplicationContext(),Uri.parse(getApplicationContext().getExternalMediaDirs()[0].getPath()));
+        mMediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(getApplicationContext().getExternalMediaDirs()[0].getPath()));
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -40,6 +49,8 @@ public class ForeGroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mMediaFiles = (ArrayList<MediaFile>) intent.getExtras().getSerializable(Constants.INTENT_STRING_PLAYING_LIST);
+        int position = intent.getExtras().getInt(INTENT_STRING_CLICKED_PLAYING_POSITION);
         if (null != intent.getAction())
             if (intent.getAction().equals("ACTION.STOPFOREGROUND_ACTION")) {
                 stopForeground(true);
